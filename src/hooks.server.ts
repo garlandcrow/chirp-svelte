@@ -1,7 +1,7 @@
 // hooks.server.ts
-import { createContext } from '$lib/trpc/context'
-import { router } from '$lib/trpc/router'
 import type { Handle } from '@sveltejs/kit'
 import { createTRPCHandle } from 'trpc-sveltekit'
+import { appRouter as router } from '~/server/api/root'
+import { createTRPCContext as createContext } from '~/server/api/trpc'
 
-export const handle: Handle = createTRPCHandle({ router, createContext })
+export const handle = createTRPCHandle({ router, createContext }) satisfies Handle
