@@ -3,7 +3,12 @@
 // and what to do when importing types
 declare namespace App {
   // interface Error {}
-  // interface Locals {}
   // interface PageData {}
   // interface Platform {}
+  interface Locals {
+    session?: {
+      userId: string
+      claims: import('@clerk/types').JWTClaims
+    }
+  }
 }

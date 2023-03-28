@@ -1,4 +1,4 @@
-// import { prisma } from '~/server/db'
+import { prisma } from '~/server/db'
 import type { RequestEvent } from '@sveltejs/kit'
 import { initTRPC, type inferAsyncReturnType } from '@trpc/server'
 import superjson from 'superjson'
@@ -33,16 +33,12 @@ import { ZodError } from 'zod'
 // hence the eslint-disable rule
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createTRPCContext = async (event: RequestEvent) => {
-  return {}
-  // const { req } = opts
-  // const sesh = getAuth(req)
+  const userId = event.locals.session?.userId
 
-  // const userId = sesh.userId
-
-  // return {
-  //   prisma,
-  //   userId,
-  // }
+  return {
+    prisma,
+    userId,
+  }
 }
 
 export type Context = inferAsyncReturnType<typeof createTRPCContext>
