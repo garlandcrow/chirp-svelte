@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { loadClerkStore } from 'sveltekit-clerk'
+  import { initClerkStore } from 'sveltekit-clerk'
 
-  loadClerkStore()
+  initClerkStore()
 </script>
 
 <div class="container">

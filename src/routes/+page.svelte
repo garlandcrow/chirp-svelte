@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores'
-  import { clerk, SignIn, UserButton } from 'sveltekit-clerk'
+  import { clerkStore, SignIn, UserButton } from 'sveltekit-clerk'
   import trpc from '~/lib/trpc-client'
 
   let greeting = 'press the button to load data'
@@ -30,7 +30,7 @@
 
 {#if loggedIn}
   logged in
-  <button style="padding: 2rem;" on:click={() => $clerk?.signOut()}>logout</button>
+  <button style="padding: 2rem;" on:click={() => $clerkStore?.signOut()}>logout</button>
   <UserButton />
   {#await trpc($page).posts.getAll.query()}
     <p>loading posts...</p>

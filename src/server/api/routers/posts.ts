@@ -8,13 +8,13 @@ import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 // import { Redis } from '@upstash/redis'
 
 import type { Post } from '@prisma/client'
-import { clerk } from 'sveltekit-clerk/server'
+import { clerkClient } from 'sveltekit-clerk/server'
 import { filterUserForClient } from '~/server/helpers/filterUserForClient'
 
 const addUserDataToPosts = async (posts: Post[]) => {
   const userId = posts.map((post) => post.authorId)
   const users = (
-    await clerk.users.getUserList({
+    await clerkClient.users.getUserList({
       userId: userId,
       limit: 110,
     })
@@ -64,8 +64,6 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: 'desc' }],
     })
-
-    console.debug(`src/server/api/routers/posts.ts(72): posts :>> `, posts)
 
     return addUserDataToPosts(posts)
   }),
