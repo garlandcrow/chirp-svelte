@@ -6,8 +6,6 @@
   export let data
 
   const user = data.user()
-  $: console.debug(`src/routes/[slug]/+page.svelte(9): $user.status :>> `, $user.status)
-  $: console.debug(`src/routes/[slug]/+page.svelte(9): errorrr :>> `, $user.error)
 
   $: userId = $user.data?.id
 

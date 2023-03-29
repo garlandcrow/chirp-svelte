@@ -10,7 +10,7 @@ export const handle = sequence(
   createTRPCHandle({ router, createContext }),
   async ({ event, resolve }) => {
     const res = await resolve(event)
-    console.debug(`src/hooks.server.ts(10): event.locals :>> `, event.locals)
+    // console.debug(`src/hooks.server.ts(10): event.locals :>> `, event.locals)
     return res
   }
 )
