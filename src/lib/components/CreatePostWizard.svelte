@@ -1,34 +1,29 @@
 <script lang="ts">
-  import { page } from '$app/stores'
+  import api from '$lib/api'
   import { toastStore } from '@skeletonlabs/skeleton'
   import { clerkStore } from 'sveltekit-clerk'
-  import trpc from '~/lib/trpc-client'
   import LoadingSpinner from './LoadingSpinner.svelte'
 
   $: user = $clerkStore?.user
 
-  let inputValue = ''
-  let isPosting = false
+  let value = ''
 
-  async function mutate(data: { content: string }) {
-    try {
-      isPosting = true
-      await trpc($page).posts.create.mutate(data)
-      inputValue = ''
-    } catch (e: unknown) {
+  const ctx = $api.createContext()
+
+  const createPost = $api.posts.create.createMutation({
+    onSuccess: () => {
+      value = ''
+      ctx.posts.getAll.invalidate()
+    },
+    onError: (e) => {
       let errorMessage = 'Failed to post! Please try again later.'
-      if (typeof e === 'object') {
-        const messageArray = (e as any)?.data?.zodError?.fieldErrors.content
-        if (messageArray && messageArray[0]) {
-          errorMessage = messageArray[0]
-        }
+      const fieldErrors = e.data?.zodError?.fieldErrors.content
+      if (fieldErrors && fieldErrors[0]) {
+        errorMessage = fieldErrors[0]
       }
-
       toastStore.trigger({ message: errorMessage, background: 'bg-red-500' })
-    } finally {
-      isPosting = false
-    }
-  }
+    },
+  })
 </script>
 
 <div class="flex w-full gap-3">
@@ -43,21 +38,21 @@
     placeholder="Type some emojis!"
     class="grow bg-transparent outline-none"
     type="text"
-    bind:value={inputValue}
+    bind:value
     on:keydown={(e) => {
       if (e.key === 'Enter') {
         e.preventDefault()
-        if (inputValue !== '') {
-          mutate({ content: inputValue })
+        if (value !== '') {
+          $createPost.mutate({ content: value })
         }
       }
     }}
-    disabled={isPosting}
+    disabled={$createPost.isLoading}
   />
-  {#if inputValue !== '' && !isPosting}
-    <button on:click={() => mutate({ content: inputValue })}>Post</button>
+  {#if value !== '' && !$createPost.isLoading}
+    <button on:click={() => $createPost.mutate({ content: value })}>Post</button>
   {/if}
-  {#if isPosting}
+  {#if $createPost.isLoading}
     <div class="flex items-center justify-center">
       <LoadingSpinner size={20} />
     </div>

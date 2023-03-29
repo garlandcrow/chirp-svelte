@@ -1,10 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { SignIn } from 'sveltekit-clerk'
+  import api from '~/lib/api'
   import CreatePostWizard from '~/lib/components/CreatePostWizard.svelte'
   import LoadingPage from '~/lib/components/LoadingPage.svelte'
   import PostView from '~/lib/components/PostView.svelte'
-  import trpc from '~/lib/trpc-client'
+
+  const posts = $api.posts.getAll.createQuery()
 
   $: loggedIn = Boolean($page.data.session)
 </script>
@@ -19,17 +21,17 @@
   {/if}
 </div>
 
-{#await trpc($page).posts.getAll.query()}
+{#if $posts.isLoading}
   <div class="flex grow">
     <LoadingPage />
   </div>
-{:then posts}
-  {#each posts as fullPost}
+{:else if $posts.isError}
+  <div>Something went wrong</div>
+{:else}
+  {#each $posts.data as fullPost}
     <PostView {...fullPost} />
   {/each}
-{:catch error}
-  <div>Something went wrong {error}</div>
-{/await}
+{/if}
 
 <div class="flex items-center justify-between p-4 text-xl">
   <a href="https://github.com/t3dotgg/chirp">

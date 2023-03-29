@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs'
   import relativeTime from 'dayjs/plugin/relativeTime'
-  import type { RouterOutputs } from '../trpc-client'
+  import type { RouterOutputs } from '~/server/api/root'
 
   type PostWithUser = RouterOutputs['posts']['getAll'][number]
 
