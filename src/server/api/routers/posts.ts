@@ -1,15 +1,11 @@
-// import { clerkClient } from '@clerk/nextjs/server'
+import type { Post } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
+import { clerkClient } from 'sveltekit-clerk/server'
 import { z } from 'zod'
-
 import { createTRPCRouter, privateProcedure, publicProcedure } from '~/server/api/trpc'
-
+import { filterUserForClient } from '~/server/helpers/filterUserForClient'
 // import { Ratelimit } from '@upstash/ratelimit' // for deno: see above
 // import { Redis } from '@upstash/redis'
-
-import type { Post } from '@prisma/client'
-import { clerkClient } from 'sveltekit-clerk/server'
-import { filterUserForClient } from '~/server/helpers/filterUserForClient'
 
 const addUserDataToPosts = async (posts: Post[]) => {
   const userId = posts.map((post) => post.authorId)

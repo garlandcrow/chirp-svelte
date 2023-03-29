@@ -1,5 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { postsRouter } from './routers/posts'
+import { profileRouter } from './routers/profile'
 import { createTRPCRouter } from './trpc'
 
 /**
@@ -10,6 +11,7 @@ import { createTRPCRouter } from './trpc'
 
 export const appRouter = createTRPCRouter({
   posts: postsRouter,
+  profile: profileRouter,
 })
 
 // export type definition of API
