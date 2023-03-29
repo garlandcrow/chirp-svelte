@@ -1,8 +1,9 @@
-import { prisma } from '~/server/db'
 import type { RequestEvent } from '@sveltejs/kit'
 import { initTRPC, TRPCError, type inferAsyncReturnType } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
+import { db } from '~/db'
+
 // import { getAuth } from '@clerk/nextjs/server'
 
 /**
@@ -36,7 +37,7 @@ export const createTRPCContext = async (event: RequestEvent) => {
   const userId = event.locals.session?.userId
 
   return {
-    prisma,
+    db,
     userId,
   }
 }

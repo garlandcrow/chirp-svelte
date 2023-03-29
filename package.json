@@ -9,6 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "db:migrate": "drizzle-kit up:mysql && node migrations/migrate.js",
+    "db:gen:migrations": "drizzle-kit generate:mysql",
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
@@ -21,6 +23,8 @@
     "@typescript-eslint/parser": "^5.45.0",
     "autoprefixer": "^10.4.7",
     "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3",
+    "drizzle-kit": "^0.17.1",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
@@ -29,7 +33,6 @@
     "prettier": "^2.8.0",
     "prettier-plugin-svelte": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.5",
-    "prisma": "^4.11.0",
     "svelte": "^3.54.0",
     "svelte-check": "^2.9.2",
     "svelte-preprocess": "^4.10.7",
@@ -41,13 +44,17 @@
     "vite-plugin-commonjs": "^0.6.2"
   },
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@clerk/clerk-js": "^4.32.7",
     "@clerk/clerk-sdk-node": "^4.7.17",
-    "@prisma/client": "^4.11.0",
+    "@planetscale/database": "^1.6.0",
     "@tanstack/svelte-query": "^4.27.0",
     "@trpc/client": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "drizzle-orm": "^0.23.2",
     "superjson": "^1.12.2",
     "trpc-svelte-query-adapter": "^2.1.0",
     "trpc-sveltekit": "^3.5.1",

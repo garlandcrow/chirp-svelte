@@ -1,9 +1,11 @@
-import type { Post } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { clerkClient } from 'sveltekit-clerk/server'
 import { z } from 'zod'
+import { posts, type Post } from '~/db/schema'
 import { createTRPCRouter, privateProcedure, publicProcedure } from '~/server/api/trpc'
 import { filterUserForClient } from '~/server/helpers/filterUserForClient'
+import { desc, eq } from 'drizzle-orm/expressions'
+
 // import { Ratelimit } from '@upstash/ratelimit' // for deno: see above
 // import { Redis } from '@upstash/redis'
 
@@ -43,25 +45,20 @@ const addUserDataToPosts = async (posts: Post[]) => {
 //   limiter: Ratelimit.slidingWindow(3, '1 m'),
 //   analytics: true,
 // })
-
+eq
 export const postsRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    const post = await ctx.prisma.post.findUnique({
-      where: { id: input.id },
-    })
+  getById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    const queryPosts = await ctx.db.select().from(posts).where(eq(posts.id, input.id)).limit(1)
 
-    if (!post) throw new TRPCError({ code: 'NOT_FOUND' })
+    if (!queryPosts[0]) throw new TRPCError({ code: 'NOT_FOUND' })
 
-    return (await addUserDataToPosts([post]))[0]
+    return (await addUserDataToPosts(queryPosts))[0]
   }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.prisma.post.findMany({
-      take: 100,
-      orderBy: [{ createdAt: 'desc' }],
-    })
+    const queryPosts = await ctx.db.select().from(posts).limit(100).orderBy(desc(posts.createdAt))
 
-    return addUserDataToPosts(posts)
+    return addUserDataToPosts(queryPosts)
   }),
 
   getPostsByUserId: publicProcedure
@@ -71,14 +68,12 @@ export const postsRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) =>
-      ctx.prisma.post
-        .findMany({
-          where: {
-            authorId: input.userId,
-          },
-          take: 100,
-          orderBy: [{ createdAt: 'desc' }],
-        })
+      ctx.db
+        .select()
+        .from(posts)
+        .where(eq(posts.authorId, input.userId))
+        .limit(100)
+        .orderBy(desc(posts.createdAt))
         .then(addUserDataToPosts)
     ),
 
@@ -94,12 +89,13 @@ export const postsRouter = createTRPCRouter({
       // const { success } = await ratelimit.limit(authorId)
       // if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' })
 
-      const post = await ctx.prisma.post.create({
-        data: {
+      const post = await ctx.db
+        .insert(posts)
+        .values({
           authorId,
           content: input.content,
-        },
-      })
+        })
+        .execute()
 
       return post
     }),
