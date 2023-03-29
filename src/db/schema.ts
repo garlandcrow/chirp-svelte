@@ -5,7 +5,7 @@ export const posts = mysqlTable(
   'posts',
   {
     id: serial('id').primaryKey(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at', { fsp: 2 }).notNull().defaultNow(),
     content: varchar('content', { length: 256 }).notNull(),
     authorId: varchar('author_id', { length: 256 }).notNull(),
   },
