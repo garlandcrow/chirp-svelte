@@ -2,7 +2,7 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
+import { createTRPCRouter, privateProcedure, publicProcedure } from '~/server/api/trpc'
 
 // import { Ratelimit } from '@upstash/ratelimit' // for deno: see above
 // import { Redis } from '@upstash/redis'
@@ -86,25 +86,25 @@ export const postsRouter = createTRPCRouter({
         .then(addUserDataToPosts)
     ),
 
-  // create: privateProcedure
-  //   .input(
-  //     z.object({
-  //       content: z.string().emoji('Only emojis are allowed').min(1).max(280),
-  //     })
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     const authorId = ctx.userId
+  create: privateProcedure
+    .input(
+      z.object({
+        content: z.string().emoji('Only emojis are allowed').min(1).max(280),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId
 
-  //     const { success } = await ratelimit.limit(authorId)
-  //     if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' })
+      // const { success } = await ratelimit.limit(authorId)
+      // if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' })
 
-  //     const post = await ctx.prisma.post.create({
-  //       data: {
-  //         authorId,
-  //         content: input.content,
-  //       },
-  //     })
+      const post = await ctx.prisma.post.create({
+        data: {
+          authorId,
+          content: input.content,
+        },
+      })
 
-  //     return post
-  //   }),
+      return post
+    }),
 })

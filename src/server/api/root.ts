@@ -1,4 +1,3 @@
-import { greetingRouter } from './routers/greeting'
 import { postsRouter } from './routers/posts'
 import { createTRPCRouter } from './trpc'
 
@@ -9,7 +8,6 @@ import { createTRPCRouter } from './trpc'
  */
 
 export const appRouter = createTRPCRouter({
-  greeting: greetingRouter,
   posts: postsRouter,
 })
 

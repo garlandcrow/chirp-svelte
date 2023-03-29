@@ -1,6 +1,6 @@
 import { prisma } from '~/server/db'
 import type { RequestEvent } from '@sveltejs/kit'
-import { initTRPC, type inferAsyncReturnType } from '@trpc/server'
+import { initTRPC, TRPCError, type inferAsyncReturnType } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 // import { getAuth } from '@clerk/nextjs/server'
@@ -85,18 +85,18 @@ export const createTRPCRouter = t.router
  */
 export const publicProcedure = t.procedure
 
-// const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
-//   if (!ctx.userId) {
-//     throw new TRPCError({
-//       code: 'UNAUTHORIZED',
-//     })
-//   }
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.userId) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+    })
+  }
 
-//   return next({
-//     ctx: {
-//       userId: ctx.userId,
-//     },
-//   })
-// })
+  return next({
+    ctx: {
+      userId: ctx.userId,
+    },
+  })
+})
 
-// export const privateProcedure = t.procedure.use(enforceUserIsAuthed)
+export const privateProcedure = t.procedure.use(enforceUserIsAuthed)
