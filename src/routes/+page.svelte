@@ -8,9 +8,22 @@
 
   const posts = $api.posts.getAll.createQuery()
 
+  const createUser = $api.posts.fuckoff.createMutation({
+    onSuccess: (user) => {
+      console.debug(`src/routes/+page.svelte(12): user :>> `, user)
+    },
+    onError: (e) => {
+      console.error(`src/routes/+page.svelte(16): e :>> `, e)
+    },
+  })
+
   $: loggedIn = Boolean($page.data.session)
 </script>
 
+<button
+  style="padding: 2rem; background: darkred;"
+  on:click={() => $createUser.mutate({ username: 'slacker' })}>add user</button
+>
 <div class="flex border-b border-slate-400 p-4">
   {#if loggedIn}
     <CreatePostWizard />

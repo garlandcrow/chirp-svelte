@@ -1,10 +1,10 @@
 import { TRPCError } from '@trpc/server'
+import { desc, eq } from 'drizzle-orm/expressions'
 import { clerkClient } from 'sveltekit-clerk/server'
 import { z } from 'zod'
 import { posts, type Post } from '~/db/schema'
 import { createTRPCRouter, privateProcedure, publicProcedure } from '~/server/api/trpc'
 import { filterUserForClient } from '~/server/helpers/filterUserForClient'
-import { desc, eq } from 'drizzle-orm/expressions'
 
 // import { Ratelimit } from '@upstash/ratelimit' // for deno: see above
 // import { Redis } from '@upstash/redis'
@@ -92,6 +92,7 @@ export const postsRouter = createTRPCRouter({
       const post = await ctx.db
         .insert(posts)
         .values({
+          id: undefined,
           authorId,
           content: input.content,
         })
