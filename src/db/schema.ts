@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import type { InferModel } from 'drizzle-orm'
+import { sql, type InferModel } from 'drizzle-orm'
 import { customType, mysqlTable, timestamp, uniqueIndex, varchar } from 'drizzle-orm/mysql-core'
 
 const cuid = customType<{ data: string | undefined; notNull: true }>({
@@ -15,7 +15,9 @@ export const posts = mysqlTable(
   'posts',
   {
     id: cuid('id').primaryKey(),
-    createdAt: timestamp('created_at', { fsp: 2 }).notNull().defaultNow(),
+    createdAt: timestamp('created_at', { fsp: 2 })
+      .notNull()
+      .default(sql`now(2)`),
     content: varchar('content', { length: 256 }).notNull(),
     authorId: varchar('author_id', { length: 256 }).notNull(),
   },

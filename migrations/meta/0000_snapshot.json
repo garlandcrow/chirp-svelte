@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e7f9ba01-6d56-433c-88ae-afedecfb046a",
+  "id": "3aec1afb-5a26-45e3-9c0b-a642a64a2566",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "posts": {
@@ -20,7 +20,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "now(2)"
         },
         "content": {
           "name": "content",
