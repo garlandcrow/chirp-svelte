@@ -45,9 +45,9 @@ const addUserDataToPosts = async (posts: Post[]) => {
 //   limiter: Ratelimit.slidingWindow(3, '1 m'),
 //   analytics: true,
 // })
-eq
+
 export const postsRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     const queryPosts = await ctx.db.select().from(posts).where(eq(posts.id, input.id)).limit(1)
 
     if (!queryPosts[0]) throw new TRPCError({ code: 'NOT_FOUND' })
