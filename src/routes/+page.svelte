@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores'
-  import { SignIn } from 'sveltekit-clerk'
+  import { SignInButton } from 'sveltekit-clerk'
   import api from '~/lib/api'
   import CreatePostWizard from '~/lib/components/CreatePostWizard.svelte'
   import LoadingPage from '~/lib/components/LoadingPage.svelte'
@@ -16,7 +16,7 @@
     <CreatePostWizard />
   {:else}
     <div class="flex justify-center">
-      <SignIn />
+      <SignInButton />
     </div>
   {/if}
 </div>
